@@ -1,10 +1,36 @@
 from nltk.stem.porter import PorterStemmer
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import re
+import random
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
+
+def create_combination(n):
+
+    combinations = [] 
+
+    for i in range(n):
+
+        cols = [
+            "new_title",
+            "overview",
+            "spoken_languages",
+            "original_language",
+            "production_companies",
+            "production_countries"
+        ]  
+
+        for i in range(len(cols)):
+            random_number = random.randint(1, 10)
+            for x in range(random_number):
+                cols.append(cols[i])
+        
+        combinations.append(cols)
+
+    return combinations
+
 
 def recommend_movies(df, movie_title, cosine_sim):
 
@@ -20,18 +46,21 @@ def recommend_movies(df, movie_title, cosine_sim):
     lst.append([df.iloc[i]["title"], score_series[i]])
 
   return lst
-  
+
+
+# TfidfVectorizer --> convert a collection of text documents to a matrix of TF-IDF features
+#- Welche Gewichtung hat das Wort im Overview --> df_tfidf_vect
 
 def create_cosine(data):
-    # create tfidf vectorizer
-    tfidf_vectorizer = TfidfVectorizer(ngram_range=(1, 2))
+  # create tfidf vectorizer
+  tfidf_vectorizer = TfidfVectorizer(ngram_range=(1, 2))
 
-    # transform data to tfidf matrix (sparse matrix)
-    tfidf = tfidf_vectorizer.fit_transform(data)
+  # transform data to tfidf matrix (sparse matrix)
+  tfidf = tfidf_vectorizer.fit_transform(data)
 
-    cosine_sim = cosine_similarity(tfidf)
-    
-    return cosine_sim
+  cosine_sim = cosine_similarity(tfidf)
+  
+  return cosine_sim
 
 
 def stemming_tokenizer(data):
@@ -68,5 +97,4 @@ def stemming_tokenizer(data):
     overviews.append(words_filtered)
 
   return overviews
-
     

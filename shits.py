@@ -384,32 +384,7 @@ def doc2vec_rec_user(df, split, cols):
 
     return testing_movies
 ''''''
-'''Ploting Hits and precision'''
-def calculate_hits(data):
-    user = 0
-    precision = []
-    for key, values in test_movies.items():
-        
-        for value in values:
-            ## check if value is in recommended movies and at which position
-            if value in data[key]:
-                hits += 1
-                precision.append(data[key].index(value))
-    
-    plot_hits(precision, hits)
 
-def plot_hits(precision, hits):
-
-    # count number of hits per position (dictionary)
-    c = {i:precision.count(i) for i in precision}
-
-    plt.figure(figsize=(10, 8))
-    plt.bar(c.keys(), c.values())
-    plt.title("Precision of Hits (n Hits: {})".format(hits))
-    plt.xlabel("Position")
-    plt.ylabel("Number of Hits")
-    plt.show()
-''''''
 
 
 '''Count Hits and precision'''

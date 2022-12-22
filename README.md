@@ -3,7 +3,7 @@ Im Rahmen der vorliegenden Challenge habt ihr die Möglichkeit selber ein Produc
 
 ## Libraries
 Python Notebook als PDF exportieren:
-pip install pandoc
+https://pandoc.org/installing.html
 pip install nbconvert
 
 pip install pandas

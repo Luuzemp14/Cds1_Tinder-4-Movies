@@ -324,6 +324,11 @@ def lsa_final(liked, movies, cols):
         # sort similarity scores and get names of movies
         sorted_similarities.append(similarities[0][similarities[0].argsort()[::-1]])
 
+    # if movies are longer than 1, get first 3 recommendations for each movie
+    if len(liked) > 1:
+        # get first 3 recommendations for each movie
+        sorted_similarities = [item[:3] for item in sorted_similarities]
+
     # flatten sorted_similarities list
     sorted_similarities = [item for sublist in sorted_similarities for item in sublist]
 
@@ -370,6 +375,11 @@ def doc2vec_final(df, movies, cols):
         similar_sentences = similar_sentences[1:]
 
         lst.append(similar_sentences)
+
+    # if movie_lst is longer than 1, get first 3 recommendations for each movie
+    if len(movies) > 1:
+        # get first 3 recommendations for each movie
+        lst = [item[:3] for item in lst]
 
     # flatten lst
     lst = [item for sublist in lst for item in sublist]

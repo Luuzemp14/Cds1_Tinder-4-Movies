@@ -1,6 +1,18 @@
 # Cds1_Tinder-4-Movies
 Im Rahmen der vorliegenden Challenge habt ihr die Möglichkeit selber ein Product Recommendation System zu implementieren, mit dem aufgrund von Produktbeschreibungen effizient personalisierte Produktempfehlungen gemacht werden können. 
 
+## Libraries
+Python Notebook als PDF exportieren:
+pip install pandoc
+pip install nbconvert
+
+pip install pandas
+pip install nltk
+nltk.download('stopwords')
+pip install seaborn
+pip install gensim
+pip install scikit-learn
+
 
 ## Tasks
 

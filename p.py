@@ -11,7 +11,6 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
-
 import gensim
 from gensim.models import Doc2Vec
 from gensim.models.doc2vec import TaggedDocument
@@ -333,7 +332,7 @@ def lsa_final(liked, movies, cols):
     sorted_similarities = [item for sublist in sorted_similarities for item in sublist]
 
     # sort similarities and get top 5 movies
-    sorted_indexes = [i for i in similarities[0].argsort()[::-1]][1:11]
+    sorted_indexes = [i for i in similarities[0].argsort()[::-1]][1:6]
 
     # get titles of top 5 movies
     sorted_movies = [titles[i] for i in sorted_indexes]
@@ -348,7 +347,7 @@ def doc2vec_final(df, movies, cols):
     tagged_documents = list(create_tagged_document(df["D2V"], df["movieId"]))
 
     # create doc2vec model
-    model = Doc2Vec(tagged_documents, vector_size = 90, window = 5, min_count = 1, workers = 4)
+    model = Doc2Vec(tagged_documents, vector_size = 90, window = 5, min_count = 2, workers = 4)
 
     lst = []
 
@@ -618,6 +617,8 @@ def calculate_hits(recs,test_set):
 
     for key, values in test_set.items():
         hits_per_user = 0
+        if key not in recs:
+            continue
         for value in values:
             ## check if value is in recommended movies and at which position
             if value in recs[key]:

@@ -591,7 +591,7 @@ def plot_hits(precision, hits, users, total_users):
     c = {i:precision.count(i) for i in precision}
 
     # plot hits
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(12, 8))
     plt.bar(c.keys(), c.values())
     plt.title("Precision of Hits (n Hits: {})\n found on {} Users out of a total of {} users".format(hits, users, total_users))
     plt.xlabel("Position")

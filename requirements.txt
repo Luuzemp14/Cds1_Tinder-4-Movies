@@ -1,5 +1,4 @@
 dash==2.6.0
 pandas
 gunicorn
-base64
 sklearn

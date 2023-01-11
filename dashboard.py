@@ -5,8 +5,15 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import pandas as pd
 import base64
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 df = pd.read_csv('movies_hp.csv')
+df_movies_nlp = pd.read_csv('df_movies_nlp.csv')
+
+# replace nan values with empty string from df_movies_nlp
+df_movies_nlp = df_movies_nlp.fillna('')
+
 filtered_df = df
 random_movie = None
 selected_genres = []
@@ -259,7 +266,7 @@ page_1_layout = html.Div(
                             html.Div('Science Fiction', style = {'font-size': 18, 'display': 'inline-block', 'margin-left': 5}),
                         ],  style = {'display': 'inline-block', 'margin-bottom': 15}
                     ), 
-                    'value': 'Sience Fiction'
+                    'value': 'Science Fiction'
                 },
                 {
                     'label': html.Div(
@@ -270,7 +277,6 @@ page_1_layout = html.Div(
                     ), 
                     'value': 'TV Movie'
                 },
-
                 {
                     'label': html.Div(
                         [
@@ -306,7 +312,7 @@ page_1_layout = html.Div(
             style = {'margin-top': '20px'}
         ),
         dcc.Link(dbc.Button(
-            'Start swiping',
+            'Start',
             id = 'start-button',
             n_clicks = 0, 
             style = {'margin-top': '20px'}),
@@ -338,7 +344,7 @@ page_2_layout = html.Div(
             dbc.Button('Dislike', id = 'dislike-button', style = {'margin-left': '10px'}, color = 'danger')            
         ]),
         dcc.Link(dbc.Button(
-            'Show recommendations',
+            'Go to Recommendations',
             id = 'recommendations-button',
             n_clicks = 0, 
             style = {'margin-top': '40px', 'display': 'none'}),
@@ -417,14 +423,65 @@ def update_output(n_clicks):
         return {'margin-top': '40px', 'display': 'none'}
     else:
         return {'align-self': 'center', 'justify-content': 'center', 'margin-top': '20px'}
+        
 
-# Page for recommendations - show the 5 recommended movies for the user
-page_3_layout = html.Div(
-    children = [
-        nav_menu,
-        html.H1('Recommended movies for you'),
-        html.H3('Based on your selected movies: {}'.format(', '.join(liked_movies['Title'].values)))
-])
+@app.callback(
+    [Output('movie-poster-rec-1', 'src'),
+     Output('movie-title-rec-1', 'children'),
+     Output('movie-overview-rec-1', 'children'),
+     Output('movie-poster-rec-2', 'src'),
+     Output('movie-title-rec-2', 'children'),
+     Output('movie-overview-rec-2', 'children'),
+     Output('movie-poster-rec-3', 'src'),
+     Output('movie-title-rec-3', 'children'),
+     Output('movie-overview-rec-3', 'children'),
+     Output('movie-poster-rec-4', 'src'),
+     Output('movie-title-rec-4', 'children'),
+     Output('movie-overview-rec-4', 'children'),
+     Output('movie-poster-rec-5', 'src'),
+     Output('movie-title-rec-5', 'children'),
+     Output('movie-overview-rec-5', 'children'),
+     Output('rec-button', 'style'),],
+    [Input('rec-button', 'n_clicks')]
+)
+def update_output(n_clicks):
+    if n_clicks is None:
+        return {'display': 'none'}
+    else:
+        liked_movies_list = liked_movies['Title'].tolist()
+        print(liked_movies_list)
+
+        recommended_movies = tfidf_final(liked_movies_list, df_movies_nlp)
+        print("recommended movies: ", recommended_movies)
+
+        poster_urls = []
+        titles = []
+        overviews = []
+
+        for i in range(5):
+            # get row of recommended movie title
+            recommended_movie = df[df['title'] == recommended_movies[i]]
+
+            # get backdrop path
+            poster_url = recommended_movie['backdrop_path'].values[0]
+
+            # filter backdrop path if its not a string
+            if type(poster_url) != str:
+                poster_url = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
+            else:
+                poster_url = 'https://www.themoviedb.org/t/p/original' + poster_url
+
+            # get title and overview
+            title = recommended_movie['title'].values[0]
+            overview = recommended_movie['overview'].values[0]
+
+            # append to lists
+            poster_urls.append(poster_url)
+            titles.append(title)
+            overviews.append(overview)
+
+        return poster_urls[0], titles[0], overviews[0], poster_urls[1], titles[1], overviews[1], poster_urls[2], titles[2], overviews[2], poster_urls[3], titles[3], overviews[3], poster_urls[4], titles[4], overviews[4],  {'display': 'none'}
+
 
 # Page for instructions
 page_4_layout = html.Div(
@@ -450,7 +507,7 @@ page_4_layout = html.Div(
                 html.P('On the Tinder page, you will see the movie poster, title and the description of the movie. You can click the like button if you like the movie, the dislike button if you dislike the movie or the have-not seen button if you have not seen the movie. \nOnce you have reached at least 5 liked you can click the start button to start the movie recommendations.', style = {'margin-bottom': 15}),
             
                 html.H3('Step 3 - Recommendations', style = {'margin-bottom': 15}),
-                html.P('On the recommendations page, you will see the 5 recommended movies for you based on your previous choices and actions. Here you can see the information about the movie; title, overview, genres, release date, production companies, production countries and spoken languages. You can also click the link to the movie on the TMDB website.', style = {'margin-bottom': 15}),
+                html.P('On the recommendations page, you will see the movies you previously liked on the tinder page. Click on the "Start" button to start the recommendation process. This process usually takes 15 seconds, but could take longer depending on the amount of liked movies. After the calculations have been made, you will see the top 5 recommended movies for you based on your previous genre and movie choices. Here you can see the information about the movie; movie poster, title and overview.', style = {'margin-bottom': 15}),
 
                 html.H3('Step 4 - Watch the movie', style = {'margin-bottom': 15}),
                 html.P('Enjoy the movie!', style = {'margin-bottom': 15}),
@@ -458,7 +515,6 @@ page_4_layout = html.Div(
             style = {'margin-left': '15%', 'margin-right': '15%'}
         ),
 ])
-
 
 # Create the callback for the page content based on the url
 @app.callback(
@@ -472,15 +528,126 @@ def display_page(pathname):
         return page_2_layout
     elif pathname == '/recommendations':
         return html.Div(
-            children = [
-                nav_menu,
-                html.H1('Recommended movies for you'),
-                html.H3('Based on your selected movies: {}'.format(', '.join(liked_movies['Title'].values)))
-            ])
+                    children = [
+                        nav_menu,
+                            html.Div(
+                                children = [
+                                    html.H1('Recommended movies for you'),
+                                    html.H4('Based on your selected movies: {}'.format(', '.join(liked_movies['Title'].values)), id = 'selected-movies', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),
+                                    dbc.Button('Start', id = 'rec-button', style = {'margin-top': '50px'})
+                                ]
+                            ),
+                            # recommended movie 1
+                            html.Div(
+                                children = [
+                                    html.Img(id='movie-poster-rec-1', style = {'margin-top': '20px'}, height = '300px'),
+                                    html.H2(id='movie-title-rec-1', style = {'margin-top': '20px'}),
+                                    html.P(id='movie-overview-rec-1', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),     
+                                ]
+                            ),
+                            # recommended movie 2
+                            html.Div(
+                                children = [
+                                    html.Img(id='movie-poster-rec-2', style = {'margin-top': '20px'}, height = '300px'),
+                                    html.H2(id='movie-title-rec-2', style = {'margin-top': '20px'}),
+                                    html.P(id='movie-overview-rec-2', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),     
+                                ], style = {'margin-top': '20px'}
+                            ),
+                            # recommended movie 3
+                            html.Div(
+                                children = [
+                                    html.Img(id='movie-poster-rec-3', style = {'margin-top': '20px'}, height = '300px'),
+                                    html.H2(id='movie-title-rec-3', style = {'margin-top': '20px'}),
+                                    html.P(id='movie-overview-rec-3', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),     
+                                ], style = {'margin-top': '20px'}
+                            ),
+                            # recommended movie 4
+                            html.Div(
+                                children = [
+                                    html.Img(id='movie-poster-rec-4', style = {'margin-top': '20px'}, height = '300px'),
+                                    html.H2(id='movie-title-rec-4', style = {'margin-top': '20px'}),
+                                    html.P(id='movie-overview-rec-4', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),     
+                                ], style = {'margin-top': '20px'}
+                            ),
+                            # recommended movie 5
+                            html.Div(
+                                children = [
+                                    html.Img(id='movie-poster-rec-5', style = {'margin-top': '20px'}, height = '300px'),
+                                    html.H2(id='movie-title-rec-5', style = {'margin-top': '20px'}),
+                                    html.P(id='movie-overview-rec-5', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),     
+                                ], style = {'margin-top': '20px'}
+                            ),
+                        ]
+                    )
     elif pathname == '/instructions':
         return page_4_layout
     else:
         return page_4_layout
+
+
+def create_cosine(data):
+    # create tfidf vectorizer
+    tfidf_vectorizer = TfidfVectorizer(ngram_range=(1, 2))
+
+    # transform data to tfidf matrix (sparse matrix)
+    tfidf = tfidf_vectorizer.fit_transform(data)
+
+    # calculate cosine similarity
+    cosine_sim = cosine_similarity(tfidf)
+  
+    return cosine_sim
+
+
+def recommend_movies(df, movie_title, cosine_sim, n):
+   
+    # get the index of the movie that matches the title
+    idx = df[df["title"] == movie_title].index[0]
+
+    # create a Series with the similarity scores in descending order
+    score_series = pd.Series(cosine_sim[idx]).sort_values(ascending = False)
+
+    lst = []
+
+    # add 5 most similar movies to the list
+    for i in list(score_series.iloc[1:n].index):
+        lst.append([df.iloc[i]["title"], score_series[i]])
+
+    return lst
+
+
+def tfidf_final(movie_lst, df):
+    cols = ['new_title', 'overview', 'spoken_languages', 'original_language', 'production_companies', 'production_countries', 'new_title', 'new_title', 'overview', 'spoken_languages', 'spoken_languages', 'spoken_languages', 'spoken_languages', 'original_language', 'original_language', 'original_language', 'original_language', 'original_language', 'original_language', 'original_language', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_companies', 'production_countries', 'production_countries', 'production_countries', 'production_countries', 'production_countries', 'production_countries', 'production_countries', 'production_countries']
+
+    lst = []
+
+    # create tfidf column with column combination
+    df["tfidf"] = df[cols].apply(" ".join, axis=1)
+
+    # create cosine similarity matrix
+    cosine_sim = create_cosine(df["tfidf"])
+
+    # loop over all movies
+    for movie in movie_lst:
+        # get 10  movie recommendations for each movie based on cosine similarity matrix
+        recommended_movies = recommend_movies(df, movie, cosine_sim, 6)
+        lst.append(recommended_movies)
+
+    # if movie_lst is longer than 1, get first 2 recommendations for each movie
+    if len(movie_lst) > 1:
+        # get first 2 recommendations for each movie
+        lst = [item[:2] for item in lst]
+
+    # flatten lst
+    lst = [item for sublist in lst for item in sublist]
+
+    # sort lst based on score
+    lst = sorted(lst, key=lambda x: x[1], reverse=True)
+
+    # remove score from lst but keep the order
+    lst = [item[0] for item in lst]
+
+    return lst[:5]
+
 
 if __name__ == '__main__':
     app.run_server(debug = False)

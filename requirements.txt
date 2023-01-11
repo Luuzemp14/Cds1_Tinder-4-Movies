@@ -1,6 +1,6 @@
 dash==2.6.0
 pandas
 gunicorn
-sklearn
+scikit-learn
 dash_bootstrap_components
 dash_core_components

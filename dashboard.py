@@ -23,6 +23,8 @@ disliked_movies = pd.DataFrame(columns=["Title"])
 # Create the app object with bootstrap theme
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+server = app.server
+
 # Action
 with open('icons/action.jpg', 'rb') as f:
     image_action = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))

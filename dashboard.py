@@ -1,6 +1,6 @@
 import dash
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html
+from dash import dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import pandas as pd
@@ -367,19 +367,24 @@ def update_image(like_clicks, dislike_clicks, not_seen_clicks):
 
     if random_movie is not None:
         title = random_movie['title'].values[0]
+
         if not_seen_clicks is None:
             not_seen_clicks = -1
+
         if like_clicks is None:
             like_clicks = -1
+
         if dislike_clicks is None:
             dislike_clicks = -1
 
         if not_seen_clicks > like_clicks and not_seen_clicks > dislike_clicks:
             pass
+
         elif like_clicks > dislike_clicks:
             global liked_movies
             liked_movies = liked_movies.append({"Title": title}, ignore_index=True)
-        elif dislike_clicks < like_clicks:
+
+        elif dislike_clicks > like_clicks:
             global disliked_movies
             disliked_movies = disliked_movies.append({"Title": title}, ignore_index=True)
     
@@ -447,12 +452,27 @@ def update_output(n_clicks):
     [Input('rec-button', 'n_clicks')]
 )
 def update_output(n_clicks):
+    global df_movies_nlp
+    global liked_movies
+    global disliked_movies
+
     if n_clicks is None:
         return {'display': 'none'}
     else:
         liked_movies_list = liked_movies['Title'].tolist()
-        print(liked_movies_list)
+        disliked_movies_list = disliked_movies['Title'].tolist()
+        print("liked list: ", liked_movies_list)
+        print("disliked_list: ", disliked_movies_list)
 
+        print(len(df_movies_nlp))
+
+        # remove disliked movies from df_movies_nlp
+        for i in range(len(disliked_movies_list)):
+            df_movies_nlp = df_movies_nlp[df_movies_nlp['title'] != disliked_movies_list[i]]
+
+        # print row of disliked movie
+        print(len(df_movies_nlp))
+        
         recommended_movies = tfidf_final(liked_movies_list, df_movies_nlp)
         print("recommended movies: ", recommended_movies)
 
@@ -482,7 +502,7 @@ def update_output(n_clicks):
             titles.append(title)
             overviews.append(overview)
 
-        return poster_urls[0], titles[0], overviews[0], poster_urls[1], titles[1], overviews[1], poster_urls[2], titles[2], overviews[2], poster_urls[3], titles[3], overviews[3], poster_urls[4], titles[4], overviews[4],  {'display': 'none'}
+        return poster_urls[0], titles[0], overviews[0], poster_urls[1], titles[1], overviews[1], poster_urls[2], titles[2], overviews[2], poster_urls[3], titles[3], overviews[3], poster_urls[4], titles[4], overviews[4], {'display': 'none'}
 
 
 # Page for instructions
@@ -534,7 +554,7 @@ def display_page(pathname):
                         nav_menu,
                             html.Div(
                                 children = [
-                                    html.H1('Recommended movies for you'),
+                                    html.H1('Your Recommended Movies'),
                                     html.H4('Based on your selected movies: {}'.format(', '.join(liked_movies['Title'].values)), id = 'selected-movies', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),
                                     dbc.Button('Start', id = 'rec-button', style = {'margin-top': '50px'})
                                 ]

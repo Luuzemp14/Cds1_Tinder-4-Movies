@@ -29,79 +29,79 @@ server = app.server
 cwd = os.getcwd()
 
 # Action
-with open(os.path.join(cwd, 'icons', 'action.jpg'), 'rb') as f:
+with open(cwd, 'icons/action.jpg', 'rb') as f:
     image_action = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Adventure
-with open(os.path.join(cwd, 'icons', 'adventure.png'), 'rb') as f:
+with open('icons/adventure.png', 'rb') as f:
     image_adventure = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Animation
-with open(os.path.join(cwd, 'icons', 'animation2.png'), 'rb') as f:
+with open('icons/animation2.png', 'rb') as f:
     image_animation = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
  
 # Comedy
-with open(os.path.join(cwd, 'icons', 'comedy.jpg'), 'rb') as f:
+with open('icons/comedy.jpg', 'rb') as f:
     image_comedy = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Crime
-with open(os.path.join(cwd, 'icons', 'crime.jpg'), 'rb') as f:
+with open('icons/crime.jpg', 'rb') as f:
     image_crime = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Documentary
-with open(os.path.join(cwd, 'icons', 'documentary.jpg'), 'rb') as f:
+with open('icons/documentary.jpg', 'rb') as f:
     image_documentary = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Drama
-with open(os.path.join(cwd, 'icons', 'drama.jpg'), 'rb') as f:
+with open('icons/drama.jpg', 'rb') as f:
     image_drama = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Family
-with open(os.path.join(cwd, 'icons', 'family2.png'), 'rb') as f:
+with open('icons/family2.png', 'rb') as f:
     image_family = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Fantasy
-with open(os.path.join(cwd, 'icons', 'fantasy.jpg'), 'rb') as f:
+with open('icons/fantasy.jpg', 'rb') as f:
     image_fantasy = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # History
-with open(os.path.join(cwd, 'icons', 'history.jpg'), 'rb') as f:
+with open('icons/history.jpg', 'rb') as f:
     image_history = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Horror
-with open(os.path.join(cwd, 'icons', 'horror.jpg'), 'rb') as f:
+with open('icons/horror.jpg', 'rb') as f:
     image_horror = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Music
-with open(os.path.join(cwd, 'icons', 'music.jpg'), 'rb') as f:
+with open('icons/music.jpg', 'rb') as f:
     image_music = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Mystery
-with open(os.path.join(cwd, 'icons', 'mystery.jpg'), 'rb') as f:
+with open('icons/mystery.jpg', 'rb') as f:
     image_mystery = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Romance
-with open(os.path.join(cwd, 'icons', 'romance.jpg'), 'rb') as f:
+with open('icons/romance.jpg', 'rb') as f:
     image_romance = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Scifi
-with open(os.path.join(cwd, 'icons', 'scifi.jpg'), 'rb') as f:
+with open('icons/scifi.jpg', 'rb') as f:
     image_scifi = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # thriller
-with open(os.path.join(cwd, 'icons' , 'thriller.jpg'), 'rb') as f:
+with open('icons/thriller.jpg', 'rb') as f:
     image_thriller = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # TV Movie
-with open(os.path.join(cwd, 'icons', 'tv_movie.png'), 'rb') as f:
+with open('icons/tv_movie.png', 'rb') as f:
     image_tvmovie = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # War
-with open(os.path.join(cwd, 'icons', 'war.jpg'), 'rb') as f:
+with open('icons/war.jpg', 'rb') as f:
     image_war = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Western
-with open(os.path.join(cwd, 'icons', 'western.jpg'), 'rb') as f:
+with open('icons/western.jpg', 'rb') as f:
     image_western = 'data:image/png;base64,{}'.format(base64.b64encode(f.read()).decode('utf-8'))
 
 # Navigation

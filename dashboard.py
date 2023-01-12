@@ -323,6 +323,28 @@ page_1_layout = html.Div(
     ]
 )
 
+# callback for start-button
+@app.callback(
+    Output('start-button', 'href'),
+    [Input('start-button', 'n_clicks')])
+def update_output(n_clicks):
+    if n_clicks is not None:
+
+        # reset df_movies_nlp
+        global df_movies_nlp
+        df_movies_nlp = pd.read_csv('df_movies_nlp.csv')
+
+        # reset liked_movies
+        global liked_movies
+        global disliked_movies
+        liked_movies = pd.DataFrame(columns=["Title"])
+        disliked_movies = pd.DataFrame(columns=["Title"])
+
+        return "/tinder"
+    else:
+        return "/"
+
+
 @app.callback(
     Output('selected_genres', 'children'),
     [Input('checklist', 'value')])

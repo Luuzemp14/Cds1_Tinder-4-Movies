@@ -538,12 +538,8 @@ page_4_layout = html.Div(
             children = [
                 html.H1('Welcome to Movie Tinder', style = {'margin-bottom': 15}),
                 html.P('This app will help you find new movies to watch. You can select your favourite genres and then swipe through movies and click the like button if you enjoy this movie. After you have liked at least 5 movies, you can see your specialized movie recommendations.', style = {'margin-bottom': 15}),
-
-                html.H2('How does this all work?', style = {'margin-bottom': 15}),
-                html.P('The app uses a machine learning algorithm called tf-idf to find similar movies. Tf-idf stands for term frequency-inverse document frequency. Tf-idf is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. The tf-idf value increases proportionally to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the word, which helps to adjust for the fact that some words appear more frequently in general. Tf-idf is one of the most popular term-weighting schemes today; 83 percent of text-based recommender systems in digital libraries use tf-idf.', style = {'margin-bottom': 15}),
-
-                html.H2('Which data is used?', style = {'margin-bottom': 15}),
-                html.P('The data is from the Movie Database (TMDB). The data contains roughly 19,000 movies and 2.6 million ratings that have been released after the year 2000. The data contains information about the movies, such as the title, overview, genres, release date, production companies, production countries and spoken languages.', style = {'margin-bottom': 30}),
+                # horizontal line color blue
+                html.Hr(style = {'border-color': '#0074D9'}),
 
                 html.H1('Instructions', style = {'margin-bottom': 15}),
 
@@ -558,6 +554,15 @@ page_4_layout = html.Div(
 
                 html.H3('Step 4 - Watch the movie', style = {'margin-bottom': 15}),
                 html.P('Enjoy the movie!', style = {'margin-bottom': 15}),
+
+                html.Hr(style = {'border-color': '#0074D9'}),
+
+                html.H2('How does this all work?', style = {'margin-top': 30, 'margin-bottom': 15}),
+                html.P('The app uses a machine learning algorithm called tf-idf to find similar movies. Tf-idf stands for term frequency-inverse document frequency. Tf-idf is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. The tf-idf value increases proportionally to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the word, which helps to adjust for the fact that some words appear more frequently in general. Tf-idf is one of the most popular term-weighting schemes today; 83 percent of text-based recommender systems in digital libraries use tf-idf.', style = {'margin-bottom': 15}),
+
+                html.H2('Which data is used?', style = {'margin-bottom': 15}),
+                html.P('The data is from the Movie Database (TMDB). The data contains roughly 19,000 movies and 2.6 million ratings that have been released after the year 2000. The data contains information about the movies, such as the title, overview, genres, release date, production companies, production countries and spoken languages.', style = {'margin-bottom': 30}),
+
             ],
             style = {'margin-left': '15%', 'margin-right': '15%'}
         ),

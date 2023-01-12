@@ -488,45 +488,46 @@ def update_output(n_clicks):
         print("liked list: ", liked_movies_list)
         print("disliked_list: ", disliked_movies_list)
 
-        print(len(df_movies_nlp))
-
         # remove disliked movies from df_movies_nlp
         for i in range(len(disliked_movies_list)):
             df_movies_nlp = df_movies_nlp[df_movies_nlp['title'] != disliked_movies_list[i]]
 
-        # print row of disliked movie
-        print(len(df_movies_nlp))
+        # if liked movies list is not empty
+        if len(liked_movies_list) > 4:
         
-        recommended_movies = tfidf_final(liked_movies_list, df_movies_nlp)
-        print("recommended movies: ", recommended_movies)
+            recommended_movies = tfidf_final(liked_movies_list, df_movies_nlp)
+            print("recommended movies: ", recommended_movies)
 
-        poster_urls = []
-        titles = []
-        overviews = []
+            poster_urls = []
+            titles = []
+            overviews = []
 
-        for i in range(5):
-            # get row of recommended movie title
-            recommended_movie = df[df['title'] == recommended_movies[i]]
+            for i in range(5):
+                # get row of recommended movie title
+                recommended_movie = df[df['title'] == recommended_movies[i]]
 
-            # get backdrop path
-            poster_url = recommended_movie['backdrop_path'].values[0]
+                # get backdrop path
+                poster_url = recommended_movie['backdrop_path'].values[0]
 
-            # filter backdrop path if its not a string
-            if type(poster_url) != str:
-                poster_url = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
-            else:
-                poster_url = 'https://www.themoviedb.org/t/p/original' + poster_url
+                # filter backdrop path if its not a string
+                if type(poster_url) != str:
+                    poster_url = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
+                else:
+                    poster_url = 'https://www.themoviedb.org/t/p/original' + poster_url
 
-            # get title and overview
-            title = recommended_movie['title'].values[0]
-            overview = recommended_movie['overview'].values[0]
+                # get title and overview
+                title = recommended_movie['title'].values[0]
+                overview = recommended_movie['overview'].values[0]
 
-            # append to lists
-            poster_urls.append(poster_url)
-            titles.append(title)
-            overviews.append(overview)
+                # append to lists
+                poster_urls.append(poster_url)
+                titles.append(title)
+                overviews.append(overview)
 
-        return poster_urls[0], titles[0], overviews[0], poster_urls[1], titles[1], overviews[1], poster_urls[2], titles[2], overviews[2], poster_urls[3], titles[3], overviews[3], poster_urls[4], titles[4], overviews[4], {'display': 'none'}
+            return poster_urls[0], titles[0], overviews[0], poster_urls[1], titles[1], overviews[1], poster_urls[2], titles[2], overviews[2], poster_urls[3], titles[3], overviews[3], poster_urls[4], titles[4], overviews[4], {'display': 'none'}
+        
+        else:
+            return {'display': 'none'}
 
 
 # Page for instructions
@@ -553,7 +554,7 @@ page_4_layout = html.Div(
                 html.P('On the Tinder page, you will see the movie poster, title and the description of the movie. You can click the like button if you like the movie, the dislike button if you dislike the movie or the have-not seen button if you have not seen the movie. If a movie is disliked, it will be removed from the dataset and it would not appear in the recommendations. Once you have reached at least 5 liked you can click the start button to start the movie recommendations.', style = {'margin-bottom': 15}),
             
                 html.H3('Step 3 - Recommendations', style = {'margin-bottom': 15}),
-                html.P('On the recommendations page, you will see the movies you previously liked on the tinder page. Click on the "Start" button to start the recommendation process. This process usually takes 15 seconds, but could take longer depending on the amount of liked movies. After the calculations have been made, you will see the top 5 recommended movies for you based on your previous genre and movie choices. Here you can see the information about the movie; movie poster, title and overview.', style = {'margin-bottom': 15}),
+                html.P('On the recommendations page, you will see the movies you previously liked on the tinder page. Click on the "Start" button to start the recommendation process. This process usually takes 15 seconds, but could take longer depending on the amount of liked movies. After the calculations have been made, you will see the top 5 recommended movies for you based on your previous genre and movie choices. Here you can see the information about the movie; movie poster, title and overview. Make sure to like 5 movies or more for the calculations to work. If less than 5 movies were liked, the movie recommendations will not appear.', style = {'margin-bottom': 15}),
 
                 html.H3('Step 4 - Watch the movie', style = {'margin-bottom': 15}),
                 html.P('Enjoy the movie!', style = {'margin-bottom': 15}),
@@ -580,6 +581,7 @@ def display_page(pathname):
                                 children = [
                                     html.H1('Your Recommended Movies'),
                                     html.H4('Based on your selected movies: {}'.format(', '.join(liked_movies['Title'].values)), id = 'selected-movies', style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),
+                                    html.H4('Number of liked movies: {} / 5'.format(len(liked_movies)), style = {'margin-top': '20px', 'margin-left': '15%', 'margin-right': '15%'}),
                                     dbc.Button('Start', id = 'rec-button', style = {'margin-top': '50px'})
                                 ]
                             ),

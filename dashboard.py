@@ -333,6 +333,7 @@ def update_output(n_clicks):
         # reset df_movies_nlp
         global df_movies_nlp
         df_movies_nlp = pd.read_csv('df_movies_nlp.csv')
+        df_movies_nlp = df_movies_nlp.fillna('')
 
         # reset liked_movies
         global liked_movies
